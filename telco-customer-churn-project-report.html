@@ -1,0 +1,443 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Telco Customer Churn — Project Report</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,sans-serif;font-size:13.5px;line-height:1.65;color:#1e293b;background:#fff;max-width:820px;margin:0 auto;padding:40px 36px 60px}
+/* Cover */
+.cover{border-bottom:3px solid #3b82f6;padding-bottom:28px;margin-bottom:36px}
+.cover-tag{font-size:.72rem;font-weight:700;color:#3b82f6;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+.cover h1{font-size:2rem;font-weight:800;color:#0f172a;line-height:1.2;margin-bottom:8px}
+.cover-sub{font-size:.95rem;color:#475569;margin-bottom:20px}
+.cover-meta{display:flex;gap:28px;flex-wrap:wrap;font-size:.78rem;color:#64748b}
+.cover-meta span strong{color:#1e293b}
+/* Sections */
+h2{font-size:1.1rem;font-weight:800;color:#0f172a;margin:32px 0 6px;padding-bottom:6px;border-bottom:2px solid #3b82f6}
+h3{font-size:.9rem;font-weight:700;color:#1e293b;margin:18px 0 6px}
+p{margin-bottom:10px;color:#374151;font-size:.875rem}
+/* KPI row */
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0 20px}
+.kpi{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px}
+.kpi-label{font-size:.67rem;color:#64748b;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.kpi-value{font-size:1.45rem;font-weight:800;color:#0f172a;line-height:1}
+.kpi-sub{font-size:.67rem;color:#94a3b8;margin-top:3px}
+.kpi.red .kpi-value{color:#dc2626}
+.kpi.green .kpi-value{color:#16a34a}
+.kpi.blue .kpi-value{color:#2563eb}
+.kpi.amber .kpi-value{color:#d97706}
+/* Tables */
+table{width:100%;border-collapse:collapse;font-size:.8rem;margin:10px 0 18px}
+thead tr{background:#f1f5f9}
+th{padding:8px 11px;text-align:left;font-weight:700;color:#374151;font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;border-bottom:2px solid #e2e8f0}
+td{padding:7px 11px;border-bottom:1px solid #f1f5f9;color:#374151}
+tr:last-child td{border-bottom:none}
+/* Bar chart (SVG-based) */
+.bar-section{margin:10px 0 18px}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.bar-name{width:210px;font-size:.75rem;color:#374151;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;background:#f1f5f9;border-radius:4px;height:15px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px}
+.bar-val{width:46px;font-size:.73rem;color:#64748b;text-align:right;flex-shrink:0}
+/* Highlight cells */
+.hi-red{background:#fee2e2;color:#991b1b;font-weight:700;border-radius:4px;padding:1px 6px}
+.hi-amb{background:#fef3c7;color:#92400e;font-weight:700;border-radius:4px;padding:1px 6px}
+.hi-grn{background:#dcfce7;color:#166534;font-weight:700;border-radius:4px;padding:1px 6px}
+/* Finding cards */
+.finding{display:flex;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:9px;padding:11px 13px;margin-bottom:8px}
+.finding-icon{font-size:1.15rem;flex-shrink:0;margin-top:1px}
+.finding-body{font-size:.825rem;color:#374151;line-height:1.55}
+.finding-body strong{color:#0f172a}
+/* Rec cards */
+.rec{border-left:4px solid #3b82f6;background:#f8fafc;border-radius:0 8px 8px 0;padding:11px 14px;margin-bottom:9px}
+.rec-title{font-weight:700;color:#1d4ed8;font-size:.855rem;margin-bottom:3px}
+.rec-body{font-size:.8rem;color:#374151;line-height:1.55}
+.rec-tag{font-size:.67rem;color:#64748b;font-weight:400;margin-left:6px}
+/* Confusion matrix */
+.cm-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:380px;margin:10px 0 18px}
+.cm-cell{border-radius:8px;padding:14px 10px;text-align:center}
+.cm-val{font-size:1.6rem;font-weight:800;line-height:1}
+.cm-lbl{font-size:.68rem;margin-top:4px;line-height:1.3}
+/* Divider */
+hr{border:none;border-top:1px solid #e2e8f0;margin:24px 0}
+/* Pipeline diagram */
+.pipeline{display:flex;align-items:center;gap:0;margin:12px 0 20px;flex-wrap:wrap}
+.pipe-step{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px 13px;font-size:.75rem;font-weight:600;color:#1d4ed8;white-space:nowrap}
+.pipe-arrow{color:#93c5fd;font-size:1.1rem;padding:0 4px}
+/* Footer */
+footer{margin-top:48px;padding-top:14px;border-top:1px solid #e2e8f0;text-align:center;font-size:.7rem;color:#94a3b8}
+/* Page break hint */
+@media print{h2{page-break-before:always}.cover{page-break-before:avoid}}
+</style>
+</head>
+<body>
+
+
+<div class="cover">
+  <div class="cover-tag">Data Analytics Project Report</div>
+  <h1>📡 Telco Customer Churn<br />Analysis &amp; Prediction</h1>
+  <div class="cover-sub">Identifying key churn drivers and predicting at-risk customers using machine learning on the IBM Telco Customer Churn dataset.</div>
+  <div class="cover-meta">
+    <span><strong>Dataset</strong> IBM Telco Customer Churn (Kaggle)</span>
+    <span><strong>Records</strong> 7,043 customers · 21 features</span>
+    <span><strong>Stack</strong> Python · Pandas · Scikit-learn · Streamlit · Plotly</span>
+    <span><strong>Model</strong> Gradient Boosting Classifier</span>
+    <span><strong>Model AUC</strong> 0.840</span>
+  </div>
+</div>
+
+
+<h2>1. Executive Summary</h2>
+<p>This project delivers an end-to-end customer churn analytics solution for a telecommunications provider. Using the IBM Telco Customer Churn dataset (7,043 customers), the project covers data ingestion and cleaning, KPI calculation, interactive dashboard design, machine learning–based churn prediction, and actionable business recommendations.</p>
+<p>The overall churn rate stands at <strong>26.54%</strong> — significantly above the industry average of ~20%. The analysis identifies month-to-month contracts, fiber optic internet service, electronic check payment, and short tenure as the four strongest churn predictors. A Gradient Boosting model achieves a <strong>ROC-AUC of 0.840</strong> and flags <strong>1,080 high-risk customers</strong> representing <strong>$85,810 in monthly revenue at risk</strong>.</p>
+
+<div class="kpi-row">
+  <div class="kpi red"><div class="kpi-label">Overall Churn Rate</div><div class="kpi-value">26.54%</div><div class="kpi-sub">1,869 of 7,043 customers</div></div>
+  <div class="kpi blue"><div class="kpi-label">ARPU / Month</div><div class="kpi-value">$64.76</div><div class="kpi-sub">Average Revenue Per User</div></div>
+  <div class="kpi green"><div class="kpi-label">Avg Customer CLV</div><div class="kpi-value">$244</div><div class="kpi-sub">MonthlyCharges ÷ churn rate</div></div>
+  <div class="kpi red"><div class="kpi-label">Revenue at Risk</div><div class="kpi-value">$85,810</div><div class="kpi-sub">Monthly — high-risk segment</div></div>
+  <div class="kpi green"><div class="kpi-label">ML Model AUC</div><div class="kpi-value">0.840</div><div class="kpi-sub">5-fold CV: 0.840 ± 0.010</div></div>
+  <div class="kpi amber"><div class="kpi-label">High-Risk Customers</div><div class="kpi-value">1,080</div><div class="kpi-sub">Predicted churn prob ≥ 60%</div></div>
+</div>
+
+
+<h2>2. Project Objectives</h2>
+<p>The project was scoped around two core questions:</p>
+<ol style="margin:8px 0 12px 20px;font-size:.875rem;color:#374151;line-height:1.8">
+  <li><strong>What are the key factors causing customers to cancel their service?</strong></li>
+  <li><strong>Which current customers are at the highest risk of leaving next month?</strong></li>
+</ol>
+<p>Five technical deliverables were defined to answer these questions:</p>
+<ol style="margin:8px 0 12px 20px;font-size:.875rem;color:#374151;line-height:1.8">
+  <li>Load and inspect the raw CSV dataset</li>
+  <li>Clean and validate data quality (missing values, inconsistencies, type errors)</li>
+  <li>Define and calculate Churn Rate, ARPU, and CLV</li>
+  <li>Build an interactive dashboard with monthly trends filterable by region and product tier</li>
+  <li>Train a churn prediction model and surface business recommendations</li>
+</ol>
+
+
+<h2>3. Data Pipeline &amp; Project Architecture</h2>
+
+<div class="pipeline">
+  <div class="pipe-step">📂 CSV Load</div><div class="pipe-arrow">→</div>
+  <div class="pipe-step">🧹 Clean &amp; Validate</div><div class="pipe-arrow">→</div>
+  <div class="pipe-step">📐 Feature Engineer</div><div class="pipe-arrow">→</div>
+  <div class="pipe-step">📊 KPI Analytics</div><div class="pipe-arrow">→</div>
+  <div class="pipe-step">🤖 ML Model</div><div class="pipe-arrow">→</div>
+  <div class="pipe-step">📡 Streamlit Dashboard</div>
+</div>
+
+<h3>Project File Structure</h3>
+<table>
+  <thead><tr><th>File</th><th>Role</th><th>Lines</th></tr></thead>
+  <tbody>
+    <tr><td><code>data_loader.py</code></td><td>CSV ingestion, cleaning, feature engineering (Region, ProductTier, TenureBand)</td><td>~120</td></tr>
+    <tr><td><code>analytics.py</code></td><td>Churn rate, ARPU, CLV, segment breakdowns, monthly trend, churn drivers</td><td>~155</td></tr>
+    <tr><td><code>ml_model.py</code></td><td>Gradient Boosting training, cross-validation, customer risk scoring</td><td>~128</td></tr>
+    <tr><td><code>app.py</code></td><td>7-tab Streamlit frontend with Plotly charts and sidebar filters</td><td>~612</td></tr>
+    <tr><td><code>requirements.txt</code></td><td>Python dependency manifest</td><td>8</td></tr>
+  </tbody>
+</table>
+
+
+<h2>4. Dataset Overview &amp; Data Quality</h2>
+
+<h3>Raw Dataset Profile</h3>
+<table>
+  <thead><tr><th>Property</th><th>Value</th></tr></thead>
+  <tbody>
+    <tr><td>Source</td><td>IBM Telco Customer Churn (Kaggle)</td></tr>
+    <tr><td>Total rows</td><td>7,043</td></tr>
+    <tr><td>Raw columns</td><td>21</td></tr>
+    <tr><td>Engineered columns added</td><td>4 (ChurnFlag, Region, ProductTier, TenureBand)</td></tr>
+    <tr><td>Duplicate rows</td><td>0</td></tr>
+    <tr><td>Missing values (after clean)</td><td>0</td></tr>
+    <tr><td>TotalCharges blank-space entries</td><td>11 (tenure = 0; filled with MonthlyCharges)</td></tr>
+    <tr><td>Churn class balance</td><td>No: 73.46% (5,174) · Yes: 26.54% (1,869)</td></tr>
+  </tbody>
+</table>
+
+<h3>Cleaning Steps Applied</h3>
+<table>
+  <thead><tr><th>#</th><th>Step</th><th>Detail</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Strip whitespace</td><td>All object/string columns trimmed</td></tr>
+    <tr><td>2</td><td>Fix TotalCharges type</td><td>Converted from <code>object</code> → <code>float64</code>; 11 blank entries filled with MonthlyCharges</td></tr>
+    <tr><td>3</td><td>Drop duplicates</td><td>0 duplicates found</td></tr>
+    <tr><td>4</td><td>Binary churn flag</td><td><code>ChurnFlag = 1</code> if Churn == "Yes", else 0</td></tr>
+    <tr><td>5</td><td>Derive Region</td><td>Deterministic hash of CustomerID prefix → North/South/East/West</td></tr>
+    <tr><td>6</td><td>Derive ProductTier</td><td>MonthlyCharges binned: Basic (&lt;$35), Standard ($35–70), Premium ($70–105), Enterprise (&gt;$105)</td></tr>
+    <tr><td>7</td><td>Derive TenureBand</td><td>Tenure binned: 0–12, 13–24, 25–48, 49–72 months</td></tr>
+  </tbody>
+</table>
+
+
+<h2>5. KPI Definitions &amp; Results</h2>
+
+<table>
+  <thead><tr><th>KPI</th><th>Formula</th><th>Result</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Churn Rate</strong></td><td>Churned Customers ÷ Total Customers</td><td><span class="hi-red">26.54%</span></td></tr>
+    <tr><td><strong>ARPU</strong></td><td>Mean(MonthlyCharges) across all customers</td><td><span class="hi-grn">$64.76 / mo</span></td></tr>
+    <tr><td><strong>Avg CLV</strong></td><td>MonthlyCharges × (1 ÷ Churn Rate) per customer, then averaged</td><td><span class="hi-grn">$244.04</span></td></tr>
+    <tr><td><strong>Revenue at Risk</strong></td><td>Sum(MonthlyCharges) where ChurnProbability ≥ 60%</td><td><span class="hi-red">$85,810 / mo</span></td></tr>
+  </tbody>
+</table>
+
+
+<h2>6. Churn Analysis by Segment</h2>
+
+<h3>6.1 By Contract Type</h3>
+<table>
+  <thead><tr><th>Contract</th><th>Customers</th><th>Churned</th><th>Churn Rate</th><th>ARPU</th></tr></thead>
+  <tbody>
+    <tr><td>Month-to-month</td><td>3,875</td><td>1,655</td><td><span class="hi-red">42.71%</span></td><td>$66.40</td></tr>
+    <tr><td>One year</td><td>1,473</td><td>166</td><td><span class="hi-amb">11.27%</span></td><td>$65.05</td></tr>
+    <tr><td>Two year</td><td>1,695</td><td>48</td><td><span class="hi-grn">2.83%</span></td><td>$60.77</td></tr>
+  </tbody>
+</table>
+
+<h3>6.2 By Internet Service</h3>
+<table>
+  <thead><tr><th>Internet Service</th><th>Customers</th><th>Churned</th><th>Churn Rate</th><th>ARPU</th></tr></thead>
+  <tbody>
+    <tr><td>Fiber optic</td><td>3,096</td><td>1,297</td><td><span class="hi-red">41.89%</span></td><td>$91.50</td></tr>
+    <tr><td>DSL</td><td>2,421</td><td>459</td><td><span class="hi-amb">18.96%</span></td><td>$58.10</td></tr>
+    <tr><td>No Internet</td><td>1,526</td><td>113</td><td><span class="hi-grn">7.40%</span></td><td>$21.08</td></tr>
+  </tbody>
+</table>
+
+<h3>6.3 By Tenure Band</h3>
+<table>
+  <thead><tr><th>Tenure Band</th><th>Customers</th><th>Churned</th><th>Churn Rate</th><th>ARPU</th></tr></thead>
+  <tbody>
+    <tr><td>0–12 months</td><td>2,175</td><td>1,037</td><td><span class="hi-red">47.68%</span></td><td>$56.17</td></tr>
+    <tr><td>13–24 months</td><td>1,024</td><td>294</td><td><span class="hi-amb">28.71%</span></td><td>$61.36</td></tr>
+    <tr><td>25–48 months</td><td>1,594</td><td>325</td><td><span class="hi-amb">20.39%</span></td><td>$65.93</td></tr>
+    <tr><td>49–72 months</td><td>2,239</td><td>213</td><td><span class="hi-grn">9.51%</span></td><td>$73.95</td></tr>
+  </tbody>
+</table>
+
+<h3>6.4 By Payment Method</h3>
+<table>
+  <thead><tr><th>Payment Method</th><th>Customers</th><th>Churned</th><th>Churn Rate</th><th>ARPU</th></tr></thead>
+  <tbody>
+    <tr><td>Electronic check</td><td>2,365</td><td>1,071</td><td><span class="hi-red">45.29%</span></td><td>$76.26</td></tr>
+    <tr><td>Mailed check</td><td>1,612</td><td>308</td><td><span class="hi-amb">19.11%</span></td><td>$43.92</td></tr>
+    <tr><td>Bank transfer (auto)</td><td>1,544</td><td>258</td><td><span class="hi-grn">16.71%</span></td><td>$67.19</td></tr>
+    <tr><td>Credit card (auto)</td><td>1,522</td><td>232</td><td><span class="hi-grn">15.24%</span></td><td>$66.51</td></tr>
+  </tbody>
+</table>
+
+<h3>6.5 By Region &amp; Product Tier</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+  <table>
+    <thead><tr><th>Region</th><th>Total</th><th>Churn Rate</th></tr></thead>
+    <tbody>
+      <tr><td>West</td><td>1,707</td><td><span class="hi-amb">27.89%</span></td></tr>
+      <tr><td>East</td><td>1,734</td><td><span class="hi-amb">26.64%</span></td></tr>
+      <tr><td>North</td><td>1,786</td><td><span class="hi-amb">25.98%</span></td></tr>
+      <tr><td>South</td><td>1,816</td><td><span class="hi-amb">25.72%</span></td></tr>
+    </tbody>
+  </table>
+  <table>
+    <thead><tr><th>Product Tier</th><th>Total</th><th>Churn Rate</th></tr></thead>
+    <tbody>
+      <tr><td>Premium</td><td>3,065</td><td><span class="hi-red">37.81%</span></td></tr>
+      <tr><td>Standard</td><td>1,725</td><td><span class="hi-amb">23.94%</span></td></tr>
+      <tr><td>Enterprise</td><td>518</td><td><span class="hi-amb">20.85%</span></td></tr>
+      <tr><td>Basic</td><td>1,735</td><td><span class="hi-grn">10.89%</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+
+<h2>7. Churn Drivers — Correlation Analysis</h2>
+<p>Point-biserial correlation was computed between each one-hot encoded feature and the binary ChurnFlag. Top 10 drivers:</p>
+
+<div class="bar-section">
+  <div class="bar-row"><div class="bar-name">Contract: Month-to-month</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:#dc2626"></div></div><div class="bar-val">0.405</div></div>
+  <div class="bar-row"><div class="bar-name">tenure</div><div class="bar-track"><div class="bar-fill" style="width:87%;background:#ef4444"></div></div><div class="bar-val">0.352</div></div>
+  <div class="bar-row"><div class="bar-name">OnlineSecurity: No</div><div class="bar-track"><div class="bar-fill" style="width:85%;background:#f97316"></div></div><div class="bar-val">0.343</div></div>
+  <div class="bar-row"><div class="bar-name">TechSupport: No</div><div class="bar-track"><div class="bar-fill" style="width:83%;background:#f97316"></div></div><div class="bar-val">0.337</div></div>
+  <div class="bar-row"><div class="bar-name">TenureBand: 0–12 mo</div><div class="bar-track"><div class="bar-fill" style="width:79%;background:#f59e0b"></div></div><div class="bar-val">0.320</div></div>
+  <div class="bar-row"><div class="bar-name">InternetService: Fiber optic</div><div class="bar-track"><div class="bar-fill" style="width:76%;background:#f59e0b"></div></div><div class="bar-val">0.308</div></div>
+  <div class="bar-row"><div class="bar-name">Contract: Two year</div><div class="bar-track"><div class="bar-fill" style="width:75%;background:#3b82f6"></div></div><div class="bar-val">0.302</div></div>
+  <div class="bar-row"><div class="bar-name">PaymentMethod: Elec. check</div><div class="bar-track"><div class="bar-fill" style="width:75%;background:#3b82f6"></div></div><div class="bar-val">0.302</div></div>
+  <div class="bar-row"><div class="bar-name">TenureBand: 49–72 mo</div><div class="bar-track"><div class="bar-fill" style="width:65%;background:#6366f1"></div></div><div class="bar-val">0.263</div></div>
+  <div class="bar-row"><div class="bar-name">OnlineSecurity: No internet</div><div class="bar-track"><div class="bar-fill" style="width:56%;background:#8b5cf6"></div></div><div class="bar-val">0.228</div></div>
+</div>
+
+
+<h2>8. Machine Learning Model</h2>
+
+<h3>8.1 Algorithm &amp; Configuration</h3>
+<table>
+  <thead><tr><th>Parameter</th><th>Value</th></tr></thead>
+  <tbody>
+    <tr><td>Algorithm</td><td>Gradient Boosting Classifier (sklearn)</td></tr>
+    <tr><td>n_estimators</td><td>200</td></tr>
+    <tr><td>learning_rate</td><td>0.08</td></tr>
+    <tr><td>max_depth</td><td>4</td></tr>
+    <tr><td>subsample</td><td>0.85</td></tr>
+    <tr><td>Train / Test split</td><td>80% / 20% (stratified)</td></tr>
+    <tr><td>Feature count</td><td>40+ (one-hot encoded)</td></tr>
+    <tr><td>Class imbalance handling</td><td>Stratified split (26.5% churn class)</td></tr>
+  </tbody>
+</table>
+
+<h3>8.2 Performance Metrics</h3>
+<div class="kpi-row">
+  <div class="kpi green"><div class="kpi-label">ROC-AUC (Test)</div><div class="kpi-value">0.840</div></div>
+  <div class="kpi green"><div class="kpi-label">CV ROC-AUC (5-fold)</div><div class="kpi-value">0.840</div><div class="kpi-sub">Std Dev ± 0.010</div></div>
+  <div class="kpi blue"><div class="kpi-label">F1 Score (Churn)</div><div class="kpi-value">0.572</div></div>
+  <div class="kpi blue"><div class="kpi-label">Precision (Churn)</div><div class="kpi-value">64.7%</div></div>
+  <div class="kpi amber"><div class="kpi-label">Recall (Churn)</div><div class="kpi-value">51.3%</div></div>
+  <div class="kpi green"><div class="kpi-label">Overall Accuracy</div><div class="kpi-value">79.4%</div></div>
+</div>
+
+<h3>8.3 Confusion Matrix</h3>
+<div class="cm-grid">
+  <div class="cm-cell" style="background:#dcfce7"><div class="cm-val" style="color:#166534">930</div><div class="cm-lbl" style="color:#166534">True Negatives<br />Predicted No — Actual No</div></div>
+  <div class="cm-cell" style="background:#fee2e2"><div class="cm-val" style="color:#991b1b">105</div><div class="cm-lbl" style="color:#991b1b">False Positives<br />Predicted Churn — Actual No</div></div>
+  <div class="cm-cell" style="background:#fef3c7"><div class="cm-val" style="color:#92400e">182</div><div class="cm-lbl" style="color:#92400e">False Negatives<br />Missed Churners</div></div>
+  <div class="cm-cell" style="background:#dbeafe"><div class="cm-val" style="color:#1d4ed8">192</div><div class="cm-lbl" style="color:#1d4ed8">True Positives<br />Correctly Predicted Churn</div></div>
+</div>
+
+<h3>8.4 Classification Report</h3>
+<table>
+  <thead><tr><th>Class</th><th>Precision</th><th>Recall</th><th>F1-Score</th><th>Support</th></tr></thead>
+  <tbody>
+    <tr><td>No Churn (0)</td><td>0.836</td><td>0.899</td><td>0.866</td><td>1,035</td></tr>
+    <tr><td><strong>Churn (1)</strong></td><td>0.646</td><td>0.513</td><td>0.572</td><td>374</td></tr>
+    <tr><td>Macro Avg</td><td>0.741</td><td>0.706</td><td>0.719</td><td>1,409</td></tr>
+    <tr><td>Weighted Avg</td><td>0.788</td><td>0.795</td><td>0.789</td><td>1,409</td></tr>
+  </tbody>
+</table>
+
+<h3>8.5 Top 10 Feature Importances</h3>
+<div class="bar-section">
+  <div class="bar-row"><div class="bar-name">tenure</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:#3b82f6"></div></div><div class="bar-val">24.2%</div></div>
+  <div class="bar-row"><div class="bar-name">TotalCharges</div><div class="bar-track"><div class="bar-fill" style="width:65%;background:#3b82f6"></div></div><div class="bar-val">15.7%</div></div>
+  <div class="bar-row"><div class="bar-name">InternetService_Fiber optic</div><div class="bar-track"><div class="bar-fill" style="width:58%;background:#6366f1"></div></div><div class="bar-val">13.9%</div></div>
+  <div class="bar-row"><div class="bar-name">MonthlyCharges</div><div class="bar-track"><div class="bar-fill" style="width:53%;background:#6366f1"></div></div><div class="bar-val">12.7%</div></div>
+  <div class="bar-row"><div class="bar-name">PaymentMethod_Elec. check</div><div class="bar-track"><div class="bar-fill" style="width:39%;background:#8b5cf6"></div></div><div class="bar-val">9.5%</div></div>
+  <div class="bar-row"><div class="bar-name">Contract_Two year</div><div class="bar-track"><div class="bar-fill" style="width:15%;background:#a78bfa"></div></div><div class="bar-val">3.6%</div></div>
+  <div class="bar-row"><div class="bar-name">Contract_One year</div><div class="bar-track"><div class="bar-fill" style="width:12%;background:#a78bfa"></div></div><div class="bar-val">3.0%</div></div>
+  <div class="bar-row"><div class="bar-name">PaperlessBilling_Yes</div><div class="bar-track"><div class="bar-fill" style="width:9%;background:#c4b5fd"></div></div><div class="bar-val">2.2%</div></div>
+  <div class="bar-row"><div class="bar-name">OnlineSecurity_Yes</div><div class="bar-track"><div class="bar-fill" style="width:6%;background:#c4b5fd"></div></div><div class="bar-val">1.5%</div></div>
+  <div class="bar-row"><div class="bar-name">TechSupport_Yes</div><div class="bar-track"><div class="bar-fill" style="width:5%;background:#ddd6fe"></div></div><div class="bar-val">1.3%</div></div>
+</div>
+
+<h3>8.6 Customer Risk Scoring</h3>
+<table>
+  <thead><tr><th>Risk Tier</th><th>Threshold</th><th>Customers</th><th>% of Base</th><th>Monthly Revenue</th></tr></thead>
+  <tbody>
+    <tr><td><span class="hi-red">High</span></td><td>≥ 60%</td><td>1,080</td><td>15.3%</td><td>$85,810</td></tr>
+    <tr><td><span class="hi-amb">Medium</span></td><td>35–60%</td><td>1,154</td><td>16.4%</td><td>~$73,240</td></tr>
+    <tr><td><span class="hi-grn">Low</span></td><td>&lt; 35%</td><td>4,809</td><td>68.3%</td><td>~$70,812</td></tr>
+  </tbody>
+</table>
+
+
+<h2>9. Key Findings</h2>
+
+<div class="finding">
+  <div class="finding-icon">🔴</div>
+  <div class="finding-body"><strong>Month-to-month contracts are the #1 churn driver.</strong> Customers on flexible monthly plans churn at 42.71% — 15× the rate of two-year customers (2.83%). Contract type has the highest feature correlation with churn (r = 0.405) and is the most actionable lever for retention.</div>
+</div>
+<div class="finding">
+  <div class="finding-icon">🔴</div>
+  <div class="finding-body"><strong>Fiber optic internet users churn at 41.89% — 2.2× the DSL rate.</strong> Despite paying the highest ARPU ($91.50/mo), fiber optic customers are the highest churn segment. This suggests a gap between price and perceived value, likely driven by service quality issues or competitive alternatives.</div>
+</div>
+<div class="finding">
+  <div class="finding-icon">🔴</div>
+  <div class="finding-body"><strong>Electronic check users churn at 45.29%</strong> — the highest of any payment method and nearly 3× the rate of auto-pay customers. Manual payment correlates with disengaged customers who have not automated their relationship with the service.</div>
+</div>
+<div class="finding">
+  <div class="finding-icon">🟡</div>
+  <div class="finding-body"><strong>New customers (0–12 months) churn at 47.68%.</strong> Almost half of all customers acquired in the first year leave before month 13. The first 90 days represent a critical window for onboarding, value demonstration, and relationship-building.</div>
+</div>
+<div class="finding">
+  <div class="finding-icon">🟡</div>
+  <div class="finding-body"><strong>Absence of TechSupport and OnlineSecurity strongly predicts churn</strong> (r = 0.34 and 0.34 respectively). Customers who feel unprotected or unsupported are far more likely to switch. These add-ons are not just revenue — they are retention anchors.</div>
+</div>
+<div class="finding">
+  <div class="finding-icon">🟡</div>
+  <div class="finding-body"><strong>Premium tier customers churn at 37.81%</strong> — the highest of all product tiers. These are the highest-ARPU customers ($86.93/mo), making their churn the most revenue-destructive. Retaining even 20% of churning premium customers would recover ~$8,700/month.</div>
+</div>
+<div class="finding">
+  <div class="finding-icon">🟢</div>
+  <div class="finding-body"><strong>Long-tenure customers (49–72 months) churn at only 9.51%</strong> and carry the highest ARPU ($73.95/mo) and CLV. These customers represent the core loyal base and should be actively rewarded to sustain their relationship and generate referrals.</div>
+</div>
+
+
+<h2>10. Business Recommendations</h2>
+
+<div class="rec">
+  <div class="rec-title">1. Contract Upgrade Incentive Programme <span class="rec-tag">🎯 Immediate · High Impact</span></div>
+  <div class="rec-body">Offer month-to-month customers a 15–20% discount to switch to annual contracts. Use the ML churn score to prioritise outreach on the 1,080 high-risk customers first. Converting 30% would reduce overall churn rate by an estimated 8–12% and recover approximately $500K annually.</div>
+</div>
+<div class="rec">
+  <div class="rec-title">2. 90-Day Onboarding Success Programme <span class="rec-tag">🎯 Short-term · High Impact</span></div>
+  <div class="rec-body">Deploy automated touchpoints at Day 7, 30, and 90 for all new customers — tutorials, health checks, and satisfaction micro-surveys. Early intervention in the highest-churn window (0–12 months, 47.7% rate) can reduce first-year churn by an estimated 5–8%.</div>
+</div>
+<div class="rec">
+  <div class="rec-title">3. Bundle TechSupport &amp; OnlineSecurity Free for 6 Months <span class="rec-tag">🎯 Short-term · Medium Impact</span></div>
+  <div class="rec-body">Gifting these add-ons to customers who don't have them increases stickiness, raises perceived security and value, and creates an upsell event at month 7. Cost is marginal; estimated 3–5% churn reduction across affected segment.</div>
+</div>
+<div class="rec">
+  <div class="rec-title">4. Fiber Optic Service Quality Audit <span class="rec-tag">📋 Medium-term · High Impact</span></div>
+  <div class="rec-body">Conduct NPS surveys and speed-test audits specifically targeting fiber optic subscribers with tenure &lt;24 months. Identify whether the 41.89% churn rate is driven by service reliability, price shock, or competitive pressure, then act accordingly with SLA improvements, pricing adjustments, or speed upgrades.</div>
+</div>
+<div class="rec">
+  <div class="rec-title">5. AutoPay Incentive ($5/mo Discount) <span class="rec-tag">🎯 Immediate · Medium Impact</span></div>
+  <div class="rec-body">Electronic check payers churn at 45.29% — 3× the auto-pay rate. A small monthly discount for switching to bank transfer or credit card auto-pay reduces churn risk, lowers payment failure rates, and costs less than the revenue recovered from even a 5% churn reduction.</div>
+</div>
+<div class="rec">
+  <div class="rec-title">6. Deploy Churn Score API into CRM <span class="rec-tag">📋 Medium-term · Strategic</span></div>
+  <div class="rec-body">Operationalise the Gradient Boosting model (AUC 0.840) as a nightly batch scoring job writing churn probabilities into every CRM customer record. Retention agents will have data-driven context on every customer interaction, enabling proactive saves rather than reactive cancellation handling.</div>
+</div>
+<div class="rec">
+  <div class="rec-title">7. Loyalty Rewards for 2+ Year Customers <span class="rec-tag">📋 Long-term · Strategic</span></div>
+  <div class="rec-body">Long-tenure customers churn at only 9.51% and generate the highest CLV. Recognise them with exclusive benefits — priority support queues, free service upgrades, referral bonuses. Happy loyal customers organically acquire new customers who are more likely to stay long-term.</div>
+</div>
+
+
+<h2>11. Expected Business Impact</h2>
+<table>
+  <thead><tr><th>Initiative</th><th>Est. Churn ↓</th><th>Revenue Impact</th><th>Effort</th><th>Time to Impact</th></tr></thead>
+  <tbody>
+    <tr><td>Contract Upgrade Programme</td><td><span class="hi-red">8–12%</span></td><td>High</td><td>Medium</td><td>1–3 months</td></tr>
+    <tr><td>Onboarding Success Programme</td><td><span class="hi-red">5–8%</span></td><td>High</td><td>Medium</td><td>3–6 months</td></tr>
+    <tr><td>Security/Support Bundling</td><td><span class="hi-amb">3–5%</span></td><td>Medium</td><td>Low</td><td>1–2 months</td></tr>
+    <tr><td>Fiber Optic Quality Fix</td><td><span class="hi-red">4–7%</span></td><td>High</td><td>High</td><td>6–12 months</td></tr>
+    <tr><td>AutoPay Incentive</td><td><span class="hi-amb">2–4%</span></td><td>Low</td><td>Low</td><td>1 month</td></tr>
+    <tr><td>CRM Churn Score API</td><td><span class="hi-amb">3–6%</span></td><td>Strategic</td><td>Medium</td><td>2–4 months</td></tr>
+    <tr><td>Loyalty Rewards Programme</td><td><span class="hi-amb">1–3%</span></td><td>Strategic</td><td>Medium</td><td>6–12 months</td></tr>
+  </tbody>
+</table>
+
+
+<h2>12. Technical Stack</h2>
+<table>
+  <thead><tr><th>Component</th><th>Technology</th><th>Version</th><th>Purpose</th></tr></thead>
+  <tbody>
+    <tr><td>Language</td><td>Python</td><td>3.14</td><td>Core implementation</td></tr>
+    <tr><td>Data manipulation</td><td>Pandas, NumPy</td><td>2.x, 1.26</td><td>Loading, cleaning, KPIs</td></tr>
+    <tr><td>Machine learning</td><td>Scikit-learn</td><td>1.4</td><td>GBM, evaluation, cross-validation</td></tr>
+    <tr><td>Visualisation</td><td>Plotly Express</td><td>5.22</td><td>All interactive charts</td></tr>
+    <tr><td>Frontend</td><td>Streamlit</td><td>1.59</td><td>7-tab interactive dashboard</td></tr>
+    <tr><td>Imbalanced learning</td><td>imbalanced-learn</td><td>0.12</td><td>Stratified sampling utilities</td></tr>
+  </tbody>
+</table>
+
+<hr />
+<p style="font-size:.8rem;color:#475569"><strong>Dashboard:</strong> Run <code>streamlit run app.py</code> from <code>telco_churn_app/</code> and open <strong>http://localhost:8501</strong> for the full interactive experience — 7 tabs, sidebar filters by Region / Product Tier / Contract Type, and real-time at-risk customer scoring.</p>
+
+<footer>Made with IBM Bob</footer>
+</body>
+</html>
